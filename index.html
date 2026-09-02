@@ -432,7 +432,7 @@ function drawBoard(){const x=lbX,w=640,h=400;x.fillStyle='#0d0916';x.fillRect(0,
   x.fillStyle='#2b2140';x.fillRect(24,72,w-48,3);
   x.font='bold 34px monospace';
   if(!lbRows.length){x.fillStyle='#8d86a8';x.fillText(CFG.SUPABASE_URL?'no scores yet — be first':'offline',24,140)}
-  lbRows.slice(0,5).forEach((r,i)=>{const y=126+i*58;const me=r.wallet===lbMe;x.fillStyle=me?'#ff4fa0':(i===0?'#ffd23f':'#e6e0f5');x.fillText((i+1)+'.',24,y);x.fillText(short(r.wallet),80,y);x.textAlign='right';x.fillText(Number(r.best).toLocaleString(),w-24,y);x.textAlign='left'});
+  lbRows.slice(0,5).forEach((r,i)=>{const y=126+i*58;const me=lbMe&&r.wallet===lbMe;x.fillStyle=me?'#ff4fa0':(i===0?'#ffd23f':'#e6e0f5');x.fillText((i+1)+'.',24,y);x.fillText(String(r.wallet).slice(0,11),80,y);x.textAlign='right';x.fillText(Number(r.best).toLocaleString(),w-24,y);x.textAlign='left'});
   x.strokeStyle='#ffd23f';x.lineWidth=6;x.strokeRect(6,6,w-12,h-12);lbT.needsUpdate=true}
 scene.add(box(3.0,1.95,0.1,M(0x1b1330,{metalness:0.4,roughness:0.5}),4.9,5.7,WZ+0.24));
 const boardMesh=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.75),new THREE.MeshBasicMaterial({map:lbT}));boardMesh.position.set(4.9,5.7,WZ+0.30);scene.add(boardMesh);
@@ -748,8 +748,8 @@ async function submitScore(){const w=$('wallet').value.trim();if(!isAddr(w)){wms
   catch(e){wmsg('Failed: '+((e&&e.message)||'unknown error'),true);btn.disabled=false}}
 async function loadLeaderboard(me){const tb=$('lbBody');if(!CFG.SUPABASE_URL){tb.innerHTML='<tr><td colspan="3" style="color:#8d86a8">offline · configure Supabase to enable</td></tr>';drawBoard();return}
   try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/leaderboard?select=wallet,best,ships&order=best.desc&limit=10',{headers:hdr()});const rows=await r.json();
-    lbRows=rows;lbMe=me||'';drawBoard();
-    tb.innerHTML=rows.length?rows.map((x,i)=>'<tr class="'+(x.wallet===me?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+short(x.wallet)+'</td><td class="s">'+Number(x.best).toLocaleString()+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
+    lbRows=Array.isArray(rows)?rows:[];lbMe=isAddr(me||'')?short(me.toLowerCase()):'';const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));drawBoard();
+    tb.innerHTML=lbRows.length?lbRows.map((x,i)=>'<tr class="'+(lbMe&&x.wallet===lbMe?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+esc(String(x.wallet).slice(0,11))+'</td><td class="s">'+Number(x.best).toLocaleString()+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
   catch(e){tb.innerHTML='<tr><td colspan="3" style="color:#ff2d55">could not load</td></tr>'}}
 loadLeaderboard(savedWallet.toLowerCase());
 // ---- leaderboard modal
