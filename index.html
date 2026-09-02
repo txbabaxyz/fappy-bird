@@ -11,7 +11,7 @@
   .hud{position:fixed;inset:0;pointer-events:none}
   .disp{font-family:Impact,"Arial Black","Segoe UI Black",sans-serif;letter-spacing:.04em;text-transform:uppercase}
   #score{position:absolute;top:18px;left:50%;transform:translateX(-50%);text-align:center}
-  #scoreN{font-size:72px;line-height:1;text-shadow:0 5px 0 #000,0 0 40px rgba(255,79,160,.6)}
+  #scoreN{font-size:clamp(34px,8vh,72px);line-height:1;text-shadow:0 5px 0 #000,0 0 40px rgba(255,79,160,.6)}
   #streak{font-size:24px;margin-top:2px;color:var(--gold);text-shadow:0 3px 0 #000;opacity:0;transition:opacity .2s}
   #streak.on{opacity:1}#streak b{color:#fff}
   #lvl{font-size:13px;letter-spacing:.3em;color:#8d86a8;margin-top:6px}
@@ -20,12 +20,12 @@
   #meterState{font-size:22px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-shadow:0 3px 0 #000}
   #meterState small{font-size:12px;letter-spacing:.2em}
   #meterRow{display:flex;gap:8px;align-items:stretch}
-  #meter{width:44px;height:400px;background:#150f24;border:3px solid #2b2140;border-radius:10px;position:relative;overflow:hidden;box-shadow:0 0 0 2px #000,inset 0 0 24px #000}
+  #meter{width:44px;height:min(400px,44vh);background:#150f24;border:3px solid #2b2140;border-radius:10px;position:relative;overflow:hidden;box-shadow:0 0 0 2px #000,inset 0 0 24px #000}
   #meterFill{position:absolute;left:0;right:0;bottom:0;height:0%;background:var(--pink);box-shadow:0 0 28px var(--pink);transition:background .15s}
   #meterFill:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.18) 0 6px,transparent 6px 14px)}
   #meterTop{position:absolute;left:0;right:0;height:6px;background:#fff;opacity:.9;bottom:0}
   #meter .zone{position:absolute;left:0;right:0;height:2px;background:#000;opacity:.6}
-  #zones{display:flex;flex-direction:column-reverse;justify-content:space-between;font-size:11px;letter-spacing:.15em;height:400px;padding:2px 0}
+  #zones{display:flex;flex-direction:column-reverse;justify-content:space-between;font-size:11px;letter-spacing:.15em;height:min(400px,44vh);padding:2px 0}
   #zones span{opacity:.45;text-shadow:0 2px 0 #000;transition:opacity .2s,transform .2s;transform-origin:left}
   #zones span.on{opacity:1;transform:scale(1.15)}
   #meterLbl{font-size:18px;color:var(--pink);text-shadow:0 2px 0 #000}
@@ -64,6 +64,9 @@
   #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%)}
   .ov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(12,8,23,.72);backdrop-filter:blur(4px);pointer-events:auto;text-align:center;cursor:pointer}
   .ov.hide{display:none}
+  .fit{display:flex;flex-direction:column;align-items:center;flex-shrink:0;transform-origin:center center;will-change:transform}
+  #over .fit{align-items:flex-start;transform-origin:left center}
+  #lb,#ref{flex-shrink:0;transform-origin:center center}
   #title h1{font-size:150px;line-height:.85;margin:0}
   #title h1 .a{color:var(--pink);text-shadow:0 8px 0 #000,0 0 60px rgba(255,79,160,.7)}
   #title h1 .b{color:var(--gold);text-shadow:0 8px 0 #000,0 0 60px rgba(255,210,63,.6)}
@@ -167,7 +170,7 @@
   /* ---------- compact / mobile layout */
   @media (max-width:820px), (max-height:560px){
     #scoreN{font-size:44px}#streak{font-size:14px}#lvl{font-size:10px;margin-top:3px}
-    #meterWrap{left:calc(14px + env(safe-area-inset-left));gap:4px;transform:translateY(-42%)}#meter{width:24px;height:190px;border-width:2px}#zones{height:190px;font-size:8px;letter-spacing:.08em}#meterState{font-size:13px;height:34px}#meterState small{font-size:8px}#meterLbl{font-size:11px}#meterRow{gap:5px}
+    #meterWrap{left:calc(14px + env(safe-area-inset-left));gap:4px;transform:translateY(-42%)}#meter{width:24px;height:min(190px,40vh);border-width:2px}#zones{height:min(190px,40vh);font-size:8px;letter-spacing:.08em}#meterState{font-size:13px;height:34px}#meterState small{font-size:8px}#meterLbl{font-size:11px}#meterRow{gap:5px}
     #prog{width:calc(100vw - 40px - env(safe-area-inset-left) - env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom))}#progTop{font-size:10px;margin-bottom:3px}#progBar{height:9px;border-width:2px}
     #best{display:none}
     #rockets{right:calc(18px + env(safe-area-inset-right));bottom:calc(48px + env(safe-area-inset-bottom));gap:4px;align-items:center}
@@ -189,16 +192,15 @@
   }
   /* ---------- short screens (phone in landscape): everything must fit ~360-430px height */
   @media (max-height:560px){
-    .ov{overflow-y:auto;justify-content:flex-start;padding-top:10px;padding-bottom:10px;box-sizing:border-box}
     #title h1{font-size:40px;line-height:.9}.tag{font-size:12px;margin:4px 0 6px}
     .steps{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:calc(100vw - 20px)}.step{font-size:11.5px;padding:5px 8px;line-height:1.25}.step .n{font-size:16px}.step .ic{font-size:18px;min-width:22px}.step b{font-size:12px}.step kbd,#tut kbd{font-size:11px;padding:0 5px}
     .tag2{font-size:11px;margin-top:5px}.cta{font-size:13px;margin-top:6px}#lbBtn{margin-top:5px;font-size:12px;padding:6px 12px}
     #gate>div:first-child{font-size:20px!important;margin-bottom:4px!important}#gate .coin{width:56px;height:56px;font-size:28px;border-width:3px!important}#gate h2{font-size:24px;margin:6px 0 2px}#gate .sub{font-size:12px;line-height:1.3;margin-bottom:6px}#gwallet{width:min(420px,calc(100vw - 48px));padding:8px 10px;font-size:13px}#gate .wrow{margin-bottom:6px}#gsave{font-size:15px!important;padding:8px 18px!important}#gskip{margin-top:4px;font-size:12px}#gmsg{min-height:14px;font-size:12px}
     #tut .tt{font-size:26px}#tut .ts{font-size:12px;margin:2px 0 8px}#tut .cards{gap:8px;margin-bottom:8px;flex-wrap:nowrap}#tut .card{width:calc((100vw - 56px)/3);display:block;text-align:center;padding:8px 10px}#tut .card .ic{font-size:30px;margin-bottom:2px}#tut .card h3{font-size:13px;margin:0 0 3px}#tut .card p{font-size:11px;line-height:1.3}#tutOk{font-size:15px;padding:8px 18px}
-    #over{justify-content:center}#over h1{font-size:40px}#over .stole{font-size:12px;margin-top:0}#over .line{font-size:11px;margin-bottom:2px}#over .sc{font-size:34px}#over .sub{font-size:11px;margin-top:2px}#over .nb{font-size:14px;margin-top:2px}#walletBox{margin-top:6px;gap:4px}#walletBox .wl{font-size:9px}#wallet{width:min(400px,calc(100vw - 48px));padding:8px 10px;font-size:13px}#over .btn{font-size:13px;padding:8px 12px}#wmsg{font-size:12px;min-height:14px}
-    #lbModal,#refModal{align-items:flex-start;overflow-y:auto;padding:10px 0}#ref .rstats{margin-bottom:8px}#ref .rlink{margin-bottom:8px}#lb{width:min(520px,calc(100vw - 28px));padding:10px 12px}#lb h3{font-size:15px;margin-bottom:4px}#lb td{padding:3px 6px;font-size:13px}#lb td.r,#lb td.s{font-size:15px}#lb .stats{margin-top:6px;padding:6px 8px;font-size:12px}#lb .chain{margin-top:4px;font-size:10px}#lb .lbrow{margin-top:6px}
+    #over h1{font-size:40px}#over .stole{font-size:12px;margin-top:0}#over .line{font-size:11px;margin-bottom:2px}#over .sc{font-size:34px}#over .sub{font-size:11px;margin-top:2px}#over .nb{font-size:14px;margin-top:2px}#walletBox{margin-top:6px;gap:4px}#walletBox .wl{font-size:9px}#wallet{width:min(400px,calc(100vw - 48px));padding:8px 10px;font-size:13px}#over .btn{font-size:13px;padding:8px 12px}#wmsg{font-size:12px;min-height:14px}
+    #ref .rstats{margin-bottom:8px}#ref .rlink{margin-bottom:8px}#lb{width:min(520px,calc(100vw - 28px));padding:10px 12px}#lb h3{font-size:15px;margin-bottom:4px}#lb td{padding:3px 6px;font-size:13px}#lb td.r,#lb td.s{font-size:15px}#lb .stats{margin-top:6px;padding:6px 8px;font-size:12px}#lb .chain{margin-top:4px;font-size:10px}#lb .lbrow{margin-top:6px}
     #scoreN{font-size:36px}#streak{font-size:12px;margin-top:0}#lvl{font-size:9px;margin-top:2px}
-    #meterWrap{transform:translateY(-46%)}#meter{height:150px}#zones{height:150px}
+    #meterWrap{transform:translateY(-46%)}
     #rockets{bottom:calc(44px + env(safe-area-inset-bottom))}#launch{width:96px;height:100px}#launch .f{font-size:96px}
     #meterWrap{left:calc(16px + env(safe-area-inset-left))}#prog{width:calc(100vw - 260px - env(safe-area-inset-left) - env(safe-area-inset-right))}#score{top:8px}
   }
@@ -221,6 +223,7 @@
   <div id="pops"></div>
 </div>
 <div id="gate" class="ov disp">
+<div class="fit">
   <div style="font-size:40px;letter-spacing:.3em;margin-bottom:14px"><span style="color:var(--pink)">FAPPY</span> <span style="color:var(--gold)">BIRD</span></div>
   <div class="coin">F</div>
   <h2>$FAPPY · SOON</h2>
@@ -230,7 +233,9 @@
   <div id="gmsg"></div>
   <div id="gskip">Skip for now →</div>
 </div>
+</div>
 <div id="title" class="ov disp hide">
+<div class="fit">
   <h1><span class="a">FAPPY</span><br><span class="b">BIRD</span></h1>
   <p class="tag">everyone at that window wants to steal your idea.</p>
   <div class="steps">
@@ -243,6 +248,7 @@
   <div id="myPts" class="mypts hide"></div>
   <div class="cta">PRESS ANY KEY TO START</div>
   <div class="tbtns"><button class="btn" id="lbBtn">🏆 Leaderboard</button><button class="btn" id="refBtn">👥 Referrals · +20%</button></div>
+</div>
 </div>
 <div id="lbModal" class="disp hide">
   <div id="lb"><h3>🏆 $FAPPY Leaderboard</h3><table><tbody id="lbBody"><tr><td colspan="3" style="color:#8d86a8">loading…</td></tr></tbody></table>
@@ -263,6 +269,7 @@
     <div class="lbrow"><span></span><button class="btn ghost" id="refClose">Close</button></div></div>
 </div>
 <div id="over" class="ov disp hide">
+<div class="fit">
   <h1>BUSTED</h1>
   <div class="stole" id="ovBy"></div><div class="line" id="ovLine"></div>
   <div class="sc" id="ovScore">0</div><div class="sub" id="ovSub"></div>
@@ -275,8 +282,10 @@
   </div>
   <div class="cta" style="font-size:18px">SPACE — PLAY AGAIN</div>
 </div>
+</div>
 <div id="rotate" class="disp"><div class="ph">📱</div><div class="big">ROTATE YOUR PHONE</div><div class="sm">Landscape only — turn your phone sideways to continue.</div></div>
 <div id="tut" class="ov disp hide">
+<div class="fit">
   <div class="tt">THEY STOLE YOUR CODE</div>
   <div class="ts">Here's how you survive next time:</div>
   <div class="cards">
@@ -285,6 +294,7 @@
     <div class="card"><div class="ic">🛑</div><h3>STOP WHEN WATCHED</h3><p>Red <b>WATCHED</b> on the meter = hands off the keyboard. <b>One tap</b> and your idea is gone.</p></div>
   </div>
   <button class="btn pink" id="tutOk">GOT IT 🔥</button>
+</div>
 </div>
 <div id="err"></div>
 <script>
@@ -352,6 +362,9 @@ const camPos=CAM_FAR.clone(),camLook=LOOK.clone();
 camera.position.copy(camPos);camera.lookAt(camLook);
 function resize(){renderer.setSize(innerWidth,innerHeight);const a=innerWidth/innerHeight;camera.aspect=a;camera.fov=a<1?Math.min(88,46/a*0.85):46;camera.updateProjectionMatrix()}
 addEventListener('resize',resize);resize();
+// fit every overlay box into the viewport: measure its natural size, scale down if needed (never up)
+function fitAll(){const vw=innerWidth,vh=innerHeight;document.querySelectorAll('.fit,#lb,#ref').forEach(el=>{const w=el.offsetWidth,h=el.offsetHeight;if(!w||!h)return;const padX=el.closest('#over')?vw*0.07+16:24,padY=20;const sc=Math.min(1,(vw-padX)/w,(vh-padY)/h);el.style.transform=sc<0.999?'scale('+sc.toFixed(3)+')':'none'})}
+addEventListener('resize',fitAll);setInterval(fitAll,350);
 
 const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.65,metalness:0.05},o));
 function box(w,h,d,mat,x=0,y=0,z=0,cast=true){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;return m}
@@ -877,7 +890,7 @@ $('launch').addEventListener('pointerdown',e=>{e.stopPropagation();ac();launch()
 $('title').addEventListener('pointerdown',press);$('over').addEventListener('pointerdown',press);
 addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(refOpen){if(e.code==='Escape')closeRef();return}if(tutOpen){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();closeTut()}return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
-drawScreen();drawMonitor();drawBoard();cv.focus();
+drawScreen();drawMonitor();drawBoard();cv.focus();fitAll();
 // ---- gate coin: snapshot of the bird's head on green
 (function(){try{const sc=new THREE.Scene();sc.background=new THREE.Color(0x3f8f1a);const h=bird.head.clone();h.position.set(0,-0.02,0);h.rotation.set(0.12,-0.3,0);sc.add(h);
   sc.add(new THREE.AmbientLight(0xffffff,0.85));const dl=new THREE.DirectionalLight(0xffffff,1.0);dl.position.set(1.5,2.5,3);sc.add(dl);const rl=new THREE.PointLight(0xff4fa0,0.6,6);rl.position.set(-2,-1,2);sc.add(rl);
