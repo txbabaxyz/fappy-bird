@@ -1,0 +1,6 @@
+.DS_Store
+.secrets/
+.vercel/
+supabase/.temp/
+supabase/.branches/
+node_modules/
