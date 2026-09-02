@@ -117,6 +117,25 @@
   #gmsg{font-family:"Segoe UI",sans-serif;text-transform:none;letter-spacing:0;font-size:14px;min-height:20px;color:var(--red)}
   #gskip{margin-top:18px;font-family:"Segoe UI",sans-serif;text-transform:none;letter-spacing:0;font-size:15px;color:#8d86a8;cursor:pointer;text-decoration:underline;pointer-events:auto}
   #gskip:hover{color:#fff}
+  #title h1{font-size:120px}
+  .steps{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:880px;font-family:"Segoe UI",Roboto,sans-serif;text-transform:none;letter-spacing:0}
+  .step{display:flex;align-items:center;gap:18px;font-size:21px;line-height:1.35;color:#e6e0f5;background:rgba(21,15,36,.78);border:2px solid #2b2140;border-radius:16px;padding:10px 20px 10px 14px;box-shadow:0 4px 0 #000}
+  .step .n{font-family:Impact,"Arial Black",sans-serif;font-size:34px;color:var(--gold);min-width:30px;text-align:center;text-shadow:0 3px 0 #000}
+  .step .ic{font-size:40px;min-width:54px;text-align:center}
+  .step b{color:#fff;font-family:Impact,"Arial Black",sans-serif;font-size:23px;letter-spacing:.05em;text-transform:uppercase}
+  .step kbd,#tut kbd{display:inline-block;padding:2px 12px;border-radius:8px;background:#1c1530;border:2px solid #6a5a8f;box-shadow:0 3px 0 #000;color:var(--cyan);font-family:Impact,"Arial Black",sans-serif;font-size:22px;vertical-align:middle}
+  .tag2{font-size:22px;color:var(--gold);margin:16px 0 0;text-shadow:0 3px 0 #000}
+  #tut{background:rgba(12,8,23,.93);z-index:6}
+  #tut .tt{font-size:66px;color:var(--red);text-shadow:0 8px 0 #000,0 0 60px rgba(255,45,85,.6);line-height:1}
+  #tut .ts{font-size:22px;color:#d9d2ee;font-family:"Segoe UI",Roboto,sans-serif;text-transform:none;letter-spacing:0;margin:10px 0 30px}
+  #tut .cards{display:flex;gap:22px;margin-bottom:34px;flex-wrap:wrap;justify-content:center}
+  #tut .card{width:290px;background:rgba(21,15,36,.92);border:3px solid #2b2140;border-radius:22px;padding:26px 22px;box-shadow:0 8px 0 #000,0 0 40px rgba(180,140,255,.15)}
+  #tut .card .ic{font-size:84px;line-height:1;margin-bottom:12px}
+  #tut .card h3{margin:0 0 10px;font-size:26px;color:var(--gold);text-shadow:0 3px 0 #000}
+  #tut .card p{margin:0;font-family:"Segoe UI",Roboto,sans-serif;text-transform:none;letter-spacing:0;font-size:17px;line-height:1.45;color:#e6e0f5}
+  #tut .card p b{color:#fff}
+  #tut .card.hot{border-color:var(--pink);box-shadow:0 8px 0 #000,0 0 50px rgba(255,79,160,.35)}
+  #tutOk{font-size:26px;padding:18px 40px}
   #err{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0c0817;color:#ff4fa0;font-size:22px;text-align:center;padding:40px;line-height:1.6}
 </style>
 </head>
@@ -139,8 +158,8 @@
   <div style="font-size:40px;letter-spacing:.3em;margin-bottom:14px"><span style="color:var(--pink)">FAPPY</span> <span style="color:var(--gold)">BIRD</span></div>
   <div class="coin">F</div>
   <h2>$FAPPY</h2>
-  <div class="sub"><b>$FAPPY is the token of this game.</b> Connect your wallet to accumulate rewards for when it launches — every score you post is signed by it.<br><span class="cy">MetaMask, Rabby or Coinbase Wallet · Robinhood Chain.</span> You can skip and connect later.</div>
-  <div class="wrow"><input id="gwallet" placeholder="not connected" readonly spellcheck="false" tabindex="-1"><button class="btn ghost" id="gconnect">🦊 Connect wallet</button></div>
+  <div class="sub"><b>$FAPPY is the token of this game.</b> Paste your wallet address or you get <b>no reward</b> when it launches.<br>We save it once — <span class="cy">every game you play from now on is credited to this address.</span><br>Robinhood Chain / any EVM <span class="cy">0x…</span> address. You can skip and add it later.</div>
+  <div class="wrow"><input id="gwallet" placeholder="0x… paste your wallet address" maxlength="42" spellcheck="false" autocomplete="off"></div>
   <div class="wrow"><button class="btn pink" id="gsave" style="font-size:24px;padding:16px 34px">✅ Save &amp; play</button></div>
   <div id="gmsg"></div>
   <div id="gskip">Skip for now →</div>
@@ -148,13 +167,13 @@
 <div id="title" class="ov disp hide">
   <h1><span class="a">FAPPY</span><br><span class="b">BIRD</span></h1>
   <p class="tag">everyone at that window wants to steal your idea.</p>
-  <div class="rules">
-    <div><kbd class="cy">SPACE</kbd><span><b>Mash it to vibe code.</b> Fill the meter, ship, repeat. Holding does nothing.</span></div>
-    <div><kbd class="r">STOP</kbd><span><b>The second someone looks in.</b> One keypress while watched and your idea is gone.</span></div>
-    <div><kbd class="v">CLICK</kbd><span><b>Rockets floating in the room</b> to collect them. Up to 5.</span></div>
-    <div><kbd class="v">F</kbd><span><b>Launch fireworks.</b> The thieves turn around for 5 seconds. Everything you ship is x2.</span></div>
-    <div><kbd class="k">RISK</kbd><span><b>Ship while they knock = x3.</b> Streaks stack your multiplier. Get promoted to <b>SENIOR DEV</b>.</span></div>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><span class="ic">⌨️</span><div><b>Mash <kbd>SPACE</kbd></b> — vibe code your product. Fill the meter → <b>ship it</b>. Streaks stack your multiplier.</div></div>
+    <div class="step"><span class="n">2</span><span class="ic">🚀</span><div><b>Catch the rockets</b> floating around the room — <b>click</b> them. Stock up to 5.</div></div>
+    <div class="step"><span class="n">3</span><span class="ic">🎆</span><div><b>Press <kbd>F</kbd> to distract</b> the haters at the window. Fireworks = 5 s of safety, everything you ship is <b>x2</b>.</div></div>
+    <div class="step"><span class="n">4</span><span class="ic">🛑</span><div><b>Stop when WATCHED.</b> One tap while they look and they steal your code. Ship while they knock = <b>x3</b>.</div></div>
   </div>
+  <p class="tag2">SHIP · GET PROMOTED · BECOME A BILLIONAIRE 💸</p>
   <div class="cta">PRESS ANY KEY TO START</div>
   <button class="btn" id="lbBtn">🏆 Leaderboard</button>
 </div>
@@ -169,12 +188,22 @@
   <div class="sc" id="ovScore">0</div><div class="sub" id="ovSub"></div>
   <div class="nb hide" id="ovNew">NEW BEST</div>
   <div id="walletBox">
-    <div class="wl">Save this score to the $FAPPY leaderboard · signed by your wallet</div>
-    <div class="wrow"><input id="wallet" placeholder="not connected" readonly spellcheck="false" tabindex="-1"><button class="btn ghost" id="connect">🦊 Connect</button></div>
-    <div class="wrow"><button class="btn pink" id="submitScore">✍️ Sign &amp; save score</button><button class="btn" id="again">▶ Play again</button></div>
+    <div class="wl">Save this score to the $FAPPY leaderboard · paste your wallet address</div>
+    <div class="wrow"><input id="wallet" placeholder="0x… your wallet address" maxlength="42" spellcheck="false" autocomplete="off"></div>
+    <div class="wrow"><button class="btn pink" id="submitScore">💾 Save score</button><button class="btn" id="again">▶ Play again</button></div>
     <div id="wmsg"></div>
   </div>
   <div class="cta" style="font-size:18px">SPACE — PLAY AGAIN</div>
+</div>
+<div id="tut" class="ov disp hide">
+  <div class="tt">THEY STOLE YOUR CODE</div>
+  <div class="ts">Here's how you survive next time:</div>
+  <div class="cards">
+    <div class="card hot"><div class="ic">🚀</div><h3>CATCH THE ROCKETS</h3><p>They float around the room. <b>Click them</b> to stock up — max 5.</p></div>
+    <div class="card hot"><div class="ic">🎆</div><h3>PRESS <kbd>F</kbd> TO DISTRACT</h3><p>Fireworks! The haters at the window <b>turn around for 5 s</b> and can't steal your code. Everything you ship is <b>x2</b>.</p></div>
+    <div class="card"><div class="ic">🛑</div><h3>STOP WHEN WATCHED</h3><p>Red <b>WATCHED</b> on the meter = hands off the keyboard. <b>One tap</b> and your idea is gone.</p></div>
+  </div>
+  <button class="btn pink" id="tutOk">GOT IT 🔥</button>
 </div>
 <div id="err"></div>
 <script>
@@ -224,6 +253,7 @@ const ZONES=['WARM UP','FLOW','THE ZONE','SHIP IT'],ZCOL=['#6fe3ff','#ff4fa0','#
 let state='title',t=0,charge=0,score=0,scoreF=0,disp=0,streak=0,best=0,level=0,overT=0,newBest=false,shipT=-9,lastTap=-9,slam=0,bestStreak=0;
 let career=0,rankIdx=0,runShips=0,stock=1,distract=0,fwLeft=0,fwT=0,pickT=6,shake=0,taps=0,introT=0;
 let vis={st:'idle',timer:3,look:0,type:0,warn:0.8},beat=false;
+let tutSeen=false,tutOpen=false;try{tutSeen=localStorage.getItem('fappy3_tut')==='1'}catch(e){}
 try{best=parseInt(localStorage.getItem('fappy3_best')||'0')||0;career=parseInt(localStorage.getItem('fappy3_ships')||'0')||0}catch(e){}
 function calcRank(){let i=0;while(career>=RANKS[i+1][0])i++;return i}
 rankIdx=calcRank();
@@ -544,7 +574,7 @@ updateStock();updateProg();
 function start(){state='play';t=0;charge=0;score=0;scoreF=0;disp=0;streak=0;bestStreak=0;level=0;newBest=false;shipT=-9;lastTap=-9;runShips=0;stock=1;distract=0;fwLeft=0;pickT=4+Math.random()*3;shake=0;introT=0;beat=false;
   camPos.copy(CAM_FAR);camLook.copy(LOOK);vis={st:'idle',timer:4+Math.random()*2,look:0,type:0,warn:0.8};for(const c of critters)c.g.visible=false;
   for(const p of pickups)scene.remove(p);pickups.length=0;$('lvl').textContent='';termLines=[];termPush('### FAPPY BIRD // $FAPPY ###');termPush('$ claude "make fappy bird"');termPush('> new run. good luck.');
-  $('title').classList.add('hide');$('over').classList.add('hide');updateStock();drawScreen();sfx.start()}
+  $('title').classList.add('hide');$('over').classList.add('hide');updateStock();drawScreen();sfx.start();runToken='';runTries=0;getRun()}
 function warnTime(){const base=Math.max(0.55,1.25-level*0.06);return base*(0.75+Math.random()*0.5)}
 function lookTime(){return 0.8+Math.random()*0.8}
 function nextInterval(){const r=Math.random();let iv=r<0.2?1.2+Math.random()*1.2:(r<0.85?2.5+Math.random()*4:5+Math.random()*5);return Math.max(1.2,iv*Math.pow(0.94,level))}
@@ -553,7 +583,7 @@ function bust(){state='over';overT=t;shake=0.7;flashFx('#ff2d55',0.8);sfx.bust()
   pop3d('BUSTED','#ff2d55',birdBase.x,birdBase.y+2.6,birdBase.z+0.5,1.4,3);
   [350,900,1500].forEach((d,i)=>setTimeout(()=>{if(state!=='over')return;sfx.laugh();pop3d(['HEHEHE','MINE NOW','HAHAHA'][i],'#ff2d55',1.6+(Math.random()-0.5),5.2,-6.3,1.1,1.2)},d));
   if(score>best){best=score;newBest=true;try{localStorage.setItem('fappy3_best',best)}catch(e){}}try{localStorage.setItem('fappy3_ships',career)}catch(e){}
-  const v=VISITORS[vis.type];$('ovBy').textContent=v.n+' stole your idea';$('ovLine').textContent=v.line;$('ovScore').textContent=score;$('ovSub').textContent=runShips+' ships this run · best streak x'+bestStreak;$('ovNew').classList.toggle('hide',!newBest);$('submitScore').disabled=false;wmsg('');if(isAddr(savedWallet)&&window.ethereum&&CFG.EDGE_URL&&score>0)setTimeout(submitScore,1800);setTimeout(()=>$('over').classList.remove('hide'),1700);updateProg()}
+  const v=VISITORS[vis.type];$('ovBy').textContent=v.n+' stole your idea';$('ovLine').textContent=v.line;$('ovScore').textContent=score;$('ovSub').textContent=runShips+' ships this run · best streak x'+bestStreak;$('ovNew').classList.toggle('hide',!newBest);$('submitScore').disabled=false;wmsg('');if(isAddr(savedWallet)&&CFG.EDGE_URL&&score>0)setTimeout(submitScore,1800);setTimeout(()=>{if(!tutSeen)showTut();else $('over').classList.remove('hide')},1700);updateProg()}
 function addCareer(){career++;runShips++;const ni=calcRank();updateProg();if(ni!==rankIdx){rankIdx=ni;sfx.rank();shake=0.5;flashFx('#6fe3ff',0.9);pop('RANK UP · '+RANKS[ni][1],'#6fe3ff',innerWidth/2,innerHeight*0.42,true);termPush('> promoted: '+RANKS[ni][1]);
   for(let i=0;i<300;i++)roomP.add(0,3.5,-2,(Math.random()-0.5)*12,Math.random()*9,(Math.random()-0.5)*9,2.2,CONF[i%7],6);coinBurst(0,3.5,-2,20)}}
 function ship(){charge=0;streak++;bestStreak=Math.max(bestStreak,streak);shipT=t;const risky=(vis.st==='warn'&&distract<=0);const bonus=Math.round(100*mult()*(risky?RISK_MULT:1));scoreF+=bonus;
@@ -671,29 +701,23 @@ function setWallet(w){savedWallet=w;$('wallet').value=w;$('gwallet').value=w;try
 setWallet(savedWallet);
 function wmsg(t,err){const m=$('wmsg');m.textContent=t;m.classList.toggle('err',!!err)}
 function hdr(){return{'Content-Type':'application/json',apikey:CFG.SUPABASE_ANON_KEY,Authorization:'Bearer '+CFG.SUPABASE_ANON_KEY}}
-async function connectWallet(inp,say){if(!window.ethereum){say('No wallet extension found — install MetaMask, Rabby or Coinbase Wallet.',true);return}
-  try{const acc=await window.ethereum.request({method:'eth_requestAccounts'});const w=String(acc[0]||'').toLowerCase();if(!isAddr(w))throw new Error('no account');setWallet(w);say('Connected '+short(w))}catch(e){say('Connection rejected.',true)}}
-const toHex=str=>'0x'+Array.from(new TextEncoder().encode(str),b=>b.toString(16).padStart(2,'0')).join('');
-function buildMsg(w,sc,sh,st,d,n){return 'FAPPY BIRD score\nwallet:'+w+'\nscore:'+sc+'\nships:'+sh+'\nstreak:'+st+'\nduration:'+d+'\nnonce:'+n}
-async function submitScore(){if(!CFG.EDGE_URL){wmsg('Leaderboard not configured yet.',true);return}
-  if(!window.ethereum){wmsg('Wallet extension required — install MetaMask, Rabby or Coinbase Wallet.',true);return}
-  const btn=$('submitScore');btn.disabled=true;wmsg('Confirm in your wallet…');
-  try{const acc=await window.ethereum.request({method:'eth_requestAccounts'});const w=String(acc[0]||'').toLowerCase();if(!isAddr(w))throw new Error('no account');
-    const body={wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT)),nonce:Date.now()};
-    body.msg=buildMsg(w,body.score,body.ships,body.best_streak,body.duration_s,body.nonce);
-    body.sig=await window.ethereum.request({method:'personal_sign',params:[toHex(body.msg),w]});
-    wmsg('Saving…');
-    const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+let runToken='',runTries=0;
+async function getRun(){if(!CFG.EDGE_URL)return;try{const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'start'})});const j=await r.json();if(!j.run)throw new Error('no token');runToken=j.run}catch(e){if(state==='play'&&runTries++<3)setTimeout(getRun,3000)}}
+async function submitScore(){const w=$('wallet').value.trim();if(!isAddr(w)){wmsg('Enter a valid 0x address (42 characters).',true);return}
+  if(!CFG.EDGE_URL){wmsg('Leaderboard not configured yet.',true);return}
+  if(!runToken){wmsg('Could not reach the server when this run started — score cannot be saved. Check your connection and play again.',true);return}
+  const btn=$('submitScore');btn.disabled=true;wmsg('Saving…');
+  const body={op:'submit',run:runToken,wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT))};
+  try{const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
-    setWallet(w);wmsg('Saved · '+short(w)+' · '+score.toLocaleString());sfx.rank();loadLeaderboard(w)}
-  catch(e){wmsg('Failed: '+(e&&e.code===4001?'signature rejected':(e&&e.message)||'unknown error'),true);btn.disabled=false}}
+    setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+score.toLocaleString());sfx.rank();loadLeaderboard(w.toLowerCase())}
+  catch(e){wmsg('Failed: '+((e&&e.message)||'unknown error'),true);btn.disabled=false}}
 async function loadLeaderboard(me){const tb=$('lbBody');if(!CFG.SUPABASE_URL){tb.innerHTML='<tr><td colspan="3" style="color:#8d86a8">offline · configure Supabase to enable</td></tr>';drawBoard();return}
   try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/leaderboard?select=wallet,best,ships&order=best.desc&limit=10',{headers:hdr()});const rows=await r.json();
     lbRows=rows;lbMe=me||'';drawBoard();
     tb.innerHTML=rows.length?rows.map((x,i)=>'<tr class="'+(x.wallet===me?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+short(x.wallet)+'</td><td class="s">'+Number(x.best).toLocaleString()+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
   catch(e){tb.innerHTML='<tr><td colspan="3" style="color:#ff2d55">could not load</td></tr>'}}
 loadLeaderboard(savedWallet.toLowerCase());
-$('connect').addEventListener('click',e=>{e.stopPropagation();connectWallet('wallet',wmsg)});
 // ---- leaderboard modal
 let lbOpen=false;
 function openLb(){lbOpen=true;$('lbModal').classList.remove('hide');$('lb').classList.remove('all');$('lbMore').textContent='show top 10';loadLeaderboard(savedWallet.toLowerCase())}
@@ -706,9 +730,15 @@ $('lbMore').addEventListener('click',e=>{e.stopPropagation();const all=$('lb').c
 function gmsg(t,err){const m=$('gmsg');m.textContent=t;m.style.color=err?'#ff2d55':'#7fe06a'}
 function closeGate(){gateOpen=false;$('gate').classList.add('hide');$('title').classList.remove('hide');cv.focus()}
 $('gate').addEventListener('pointerdown',e=>e.stopPropagation());
-$('gconnect').addEventListener('click',e=>{e.stopPropagation();ac();connectWallet('gwallet',gmsg)});
-$('gsave').addEventListener('click',e=>{e.stopPropagation();ac();const w=$('gwallet').value.trim().toLowerCase();if(!isAddr(w)){gmsg('Connect a wallet first, or skip for now.',true);return}setWallet(w);loadLeaderboard(w);sfx.pick();closeGate()});
+$('gsave').addEventListener('click',e=>{e.stopPropagation();ac();const w=$('gwallet').value.trim();if(!isAddr(w)){gmsg('That is not a valid 0x address (42 characters).',true);return}setWallet(w.toLowerCase());loadLeaderboard(w.toLowerCase());sfx.pick();closeGate()});
 $('gskip').addEventListener('click',e=>{e.stopPropagation();ac();closeGate()});
+$('gwallet').addEventListener('keydown',e=>{if(e.key==='Enter')$('gsave').click()});
+$('wallet').addEventListener('keydown',e=>{if(e.key==='Enter')$('submitScore').click()});
+// ---- first-loss tutorial
+function showTut(){tutOpen=true;tutSeen=true;try{localStorage.setItem('fappy3_tut','1')}catch(e){}$('tut').classList.remove('hide')}
+function closeTut(){tutOpen=false;$('tut').classList.add('hide');$('over').classList.remove('hide');cv.focus()}
+$('tut').addEventListener('pointerdown',e=>e.stopPropagation());
+$('tutOk').addEventListener('click',e=>{e.stopPropagation();ac();closeTut()});
 if(savedWallet)closeGate();
 $('submitScore').addEventListener('click',e=>{e.stopPropagation();submitScore()});
 $('walletBox').addEventListener('pointerdown',e=>e.stopPropagation());
@@ -716,7 +746,7 @@ $('again').addEventListener('click',e=>{e.stopPropagation();ac();if(state==='ove
 
 // ============================================================ INPUT
 const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
-function press(e){if(gateOpen)return;ac();cv.focus();
+function press(e){if(gateOpen||tutOpen)return;ac();cv.focus();
   if(state==='title'){start();return}
   if(state==='over'){if(t-overT>1.8)start();return}
   if(e&&e.clientX!==undefined){mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(pickups,true);
@@ -726,7 +756,7 @@ cv.addEventListener('pointerdown',press);
 cv.addEventListener('pointermove',e=>{if(state!=='play'||!pickups.length){cv.style.cursor='';return}mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mouse,camera);cv.style.cursor=ray.intersectObjects(pickups,true).length?'grab':''});
 $('launch').addEventListener('pointerdown',e=>{e.stopPropagation();ac();launch()});
 $('title').addEventListener('pointerdown',press);$('over').addEventListener('pointerdown',press);
-addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
+addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(tutOpen){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();closeTut()}return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 drawScreen();drawMonitor();drawBoard();cv.focus();
 }catch(err){const e=document.getElementById('err');e.style.display='flex';e.textContent='Error: '+err.message;console.error(err)}
