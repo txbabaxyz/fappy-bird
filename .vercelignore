@@ -1,0 +1,5 @@
+supabase/
+DEPLOY.md
+README.md
+.gitignore
+.secrets/

@@ -793,6 +793,13 @@ $('title').addEventListener('pointerdown',press);$('over').addEventListener('poi
 addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(tutOpen){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();closeTut()}return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 drawScreen();drawMonitor();drawBoard();cv.focus();
+// ---- gate coin: snapshot of the bird's head on green
+(function(){try{const sc=new THREE.Scene();sc.background=new THREE.Color(0x3f8f1a);const h=bird.head.clone();h.position.set(0,-0.02,0);h.rotation.set(0.12,-0.3,0);sc.add(h);
+  sc.add(new THREE.AmbientLight(0xffffff,0.85));const dl=new THREE.DirectionalLight(0xffffff,1.0);dl.position.set(1.5,2.5,3);sc.add(dl);const rl=new THREE.PointLight(0xff4fa0,0.6,6);rl.position.set(-2,-1,2);sc.add(rl);
+  const cam=new THREE.PerspectiveCamera(30,1,0.1,10);cam.position.set(0,0.08,2.35);cam.lookAt(0,0.02,0);
+  const S=320,rt=new THREE.WebGLRenderTarget(S,S,{});rt.texture.encoding=THREE.sRGBEncoding;renderer.setRenderTarget(rt);renderer.render(sc,cam);const px=new Uint8Array(S*S*4);renderer.readRenderTargetPixels(rt,0,0,S,S,px);renderer.setRenderTarget(null);rt.dispose();
+  const c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d');const im=x.createImageData(S,S);for(let y=0;y<S;y++)im.data.set(px.subarray((S-1-y)*S*4,(S-y)*S*4),y*S*4);x.putImageData(im,0,0);
+  const el=$('gate').querySelector('.coin');el.textContent='';el.style.background='url('+c.toDataURL()+') center/cover';el.style.border='6px solid #ffd23f'}catch(e){}})();
 }catch(err){const e=document.getElementById('err');e.style.display='flex';e.textContent='Error: '+err.message;console.error(err)}
 </script>
 </body>
