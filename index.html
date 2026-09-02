@@ -110,6 +110,22 @@
   #lb .lbrow{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
   #lb tr.more{display:none}#lb.all tr.more{display:table-row}
   #lbMore{font-family:"Segoe UI",sans-serif;font-size:14px;color:var(--cyan);cursor:pointer;text-decoration:underline}
+  #refModal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(6,4,12,.75);pointer-events:auto;cursor:default}
+  #refModal.hide{display:none}
+  #ref{width:560px;max-width:calc(100vw - 28px);box-sizing:border-box;font-family:"Segoe UI",Roboto,sans-serif;text-transform:none;letter-spacing:0;background:rgba(21,15,36,.9);border:2px solid #2b2140;border-radius:16px;padding:18px 20px;box-shadow:0 0 0 2px #000,0 0 40px rgba(255,210,63,.15)}
+  #ref h3{font-family:Impact,"Arial Black",sans-serif;font-size:22px;letter-spacing:.2em;color:var(--gold);margin:0 0 8px;text-transform:uppercase}
+  #ref .rsub{font-size:14px;color:#d9d2ee;line-height:1.45;margin-bottom:14px}#ref .rsub b{color:#fff}
+  #ref .rlink{display:flex;gap:8px;margin-bottom:14px}#refLink{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:2px solid #3b2f57;background:#150f24;color:var(--cyan);font:14px monospace;outline:none}
+  #ref .rstats{display:flex;gap:10px;margin-bottom:14px}#ref .rs{flex:1;background:rgba(12,8,23,.6);border:1px solid #2b2140;border-radius:12px;padding:12px 8px;text-align:center}
+  #ref .rs b{display:block;font-family:Impact,"Arial Black",sans-serif;font-size:30px;color:#fff;line-height:1}#ref .rs span{display:block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#8d86a8;margin-top:6px}#ref .rs.me b{color:var(--green)}
+  #ref .rnote{background:linear-gradient(180deg,#3a2f57,#1c1530);border:2px solid #6a5a8f;border-radius:12px;padding:12px;text-align:center;font-family:Impact,"Arial Black",sans-serif;font-size:22px;letter-spacing:.12em;color:var(--gold);text-shadow:0 2px 0 #000}
+  #ref .rnote small{display:block;font-family:"Segoe UI",sans-serif;font-size:12px;letter-spacing:0;color:#8d86a8;margin-top:4px;text-shadow:none}
+  #refNoWallet{text-align:center;font-size:15px;color:#d9d2ee;padding:10px 0 16px}#refNoWallet .btn{margin-top:12px}
+  #refMsg{font-size:13px;min-height:18px;color:var(--green);margin-top:8px}
+  .mypts{margin-top:14px;font-size:20px;color:#fff;text-shadow:0 3px 0 #000;letter-spacing:.06em}.mypts b{color:var(--gold)}.mypts .sm{display:block;font-family:"Segoe UI",Roboto,sans-serif;text-transform:none;letter-spacing:0;font-size:14px;color:#d9d2ee;margin-top:4px}
+  .mypts.hide{display:none}
+  .tbtns{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;justify-content:center}.tbtns .btn{margin-top:0}
+  #refBtn{font-size:22px;padding:14px 30px;background:linear-gradient(180deg,#ffe066,#c98a10);color:#1b1330;text-shadow:none}
   #gate{background:rgba(12,8,23,.9);z-index:5}
   #gate .coin{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3a0,#ffd23f 45%,#c98a10 100%);box-shadow:0 0 60px rgba(255,210,63,.6),0 10px 0 #7a5200;display:flex;align-items:center;justify-content:center;font-size:74px;color:#7a5200;text-shadow:0 3px 0 rgba(255,255,255,.4);animation:spin 3.5s ease-in-out infinite}
   @keyframes spin{0%,100%{transform:rotateY(-25deg)}50%{transform:rotateY(25deg)}}
@@ -168,6 +184,8 @@
     #tut{padding:0 12px}#tut .tt{font-size:32px}#tut .ts{font-size:13px;margin:6px 0 10px}#tut .cards{gap:8px;margin-bottom:12px}#tut .card{width:calc(100vw - 32px);padding:10px 12px;display:flex;align-items:center;gap:12px;text-align:left;border-radius:14px;border-width:2px}#tut .card .ic{font-size:36px;margin:0}#tut .card h3{font-size:15px;margin:0 0 2px}#tut .card p{font-size:12px;line-height:1.35}#tutOk{font-size:18px;padding:12px 24px}
     #over{padding:0 14px;background:rgba(12,8,23,.85)}#over h1{font-size:56px}#over .sc{font-size:46px}#over .stole{font-size:14px}#over .line{font-size:12px;margin-bottom:6px}#over .sub{font-size:12px}#over .nb{font-size:16px}#walletBox{margin-top:8px;gap:6px}#walletBox .wl{font-size:10px}.wrow{flex-wrap:wrap}#over .cta{display:none}
     #lb{width:calc(100vw - 28px);padding:12px}
+    #ref{padding:12px}#ref h3{font-size:16px}#ref .rsub{font-size:12px;margin-bottom:8px}#ref .rs b{font-size:22px}#ref .rs{padding:8px 4px}#ref .rnote{font-size:15px;padding:8px}#refLink{font-size:12px;padding:8px 10px}
+    .mypts{font-size:14px;margin-top:8px}.mypts .sm{font-size:11px}.tbtns{gap:8px;margin-top:8px}#refBtn{font-size:14px;padding:8px 14px}
   }
   /* ---------- short screens (phone in landscape): everything must fit ~360-430px height */
   @media (max-height:560px){
@@ -178,7 +196,7 @@
     #gate>div:first-child{font-size:20px!important;margin-bottom:4px!important}#gate .coin{width:56px;height:56px;font-size:28px;border-width:3px!important}#gate h2{font-size:24px;margin:6px 0 2px}#gate .sub{font-size:12px;line-height:1.3;margin-bottom:6px}#gwallet{width:min(420px,calc(100vw - 48px));padding:8px 10px;font-size:13px}#gate .wrow{margin-bottom:6px}#gsave{font-size:15px!important;padding:8px 18px!important}#gskip{margin-top:4px;font-size:12px}#gmsg{min-height:14px;font-size:12px}
     #tut .tt{font-size:26px}#tut .ts{font-size:12px;margin:2px 0 8px}#tut .cards{gap:8px;margin-bottom:8px;flex-wrap:nowrap}#tut .card{width:calc((100vw - 56px)/3);display:block;text-align:center;padding:8px 10px}#tut .card .ic{font-size:30px;margin-bottom:2px}#tut .card h3{font-size:13px;margin:0 0 3px}#tut .card p{font-size:11px;line-height:1.3}#tutOk{font-size:15px;padding:8px 18px}
     #over{justify-content:center}#over h1{font-size:40px}#over .stole{font-size:12px;margin-top:0}#over .line{font-size:11px;margin-bottom:2px}#over .sc{font-size:34px}#over .sub{font-size:11px;margin-top:2px}#over .nb{font-size:14px;margin-top:2px}#walletBox{margin-top:6px;gap:4px}#walletBox .wl{font-size:9px}#wallet{width:min(400px,calc(100vw - 48px));padding:8px 10px;font-size:13px}#over .btn{font-size:13px;padding:8px 12px}#wmsg{font-size:12px;min-height:14px}
-    #lbModal{align-items:flex-start;overflow-y:auto;padding:10px 0}#lb{width:min(520px,calc(100vw - 28px));padding:10px 12px}#lb h3{font-size:15px;margin-bottom:4px}#lb td{padding:3px 6px;font-size:13px}#lb td.r,#lb td.s{font-size:15px}#lb .stats{margin-top:6px;padding:6px 8px;font-size:12px}#lb .chain{margin-top:4px;font-size:10px}#lb .lbrow{margin-top:6px}
+    #lbModal,#refModal{align-items:flex-start;overflow-y:auto;padding:10px 0}#ref .rstats{margin-bottom:8px}#ref .rlink{margin-bottom:8px}#lb{width:min(520px,calc(100vw - 28px));padding:10px 12px}#lb h3{font-size:15px;margin-bottom:4px}#lb td{padding:3px 6px;font-size:13px}#lb td.r,#lb td.s{font-size:15px}#lb .stats{margin-top:6px;padding:6px 8px;font-size:12px}#lb .chain{margin-top:4px;font-size:10px}#lb .lbrow{margin-top:6px}
     #scoreN{font-size:36px}#streak{font-size:12px;margin-top:0}#lvl{font-size:9px;margin-top:2px}
     #meterWrap{transform:translateY(-46%)}#meter{height:150px}#zones{height:150px}
     #rockets{bottom:calc(44px + env(safe-area-inset-bottom))}#launch{width:96px;height:100px}#launch .f{font-size:96px}
@@ -222,8 +240,9 @@
     <div class="step"><span class="n">4</span><span class="ic">🛑</span><div><b>Stop when WATCHED.</b> One tap while they look and they steal your code. Ship while they knock = <b>x3</b>.</div></div>
   </div>
   <p class="tag2">SHIP · GET PROMOTED · BECOME A BILLIONAIRE 💸</p>
+  <div id="myPts" class="mypts hide"></div>
   <div class="cta">PRESS ANY KEY TO START</div>
-  <button class="btn" id="lbBtn">🏆 Leaderboard</button>
+  <div class="tbtns"><button class="btn" id="lbBtn">🏆 Leaderboard</button><button class="btn" id="refBtn">👥 Referrals · +20%</button></div>
 </div>
 <div id="lbModal" class="disp hide">
   <div id="lb"><h3>🏆 $FAPPY Leaderboard</h3><table><tbody id="lbBody"><tr><td colspan="3" style="color:#8d86a8">loading…</td></tr></tbody></table>
@@ -231,13 +250,25 @@
     <div class="chain">Robinhood Chain · total points per wallet, all runs added up</div>
     <div class="lbrow"><span id="lbMore">show top 10</span><button class="btn ghost" id="lbClose">Close</button></div></div>
 </div>
+<div id="refModal" class="disp hide">
+  <div id="ref"><h3>👥 Referrals · +20%</h3>
+    <div class="rsub">Share your link. Every friend who joins through it earns you <b>20% of all the points they score</b> — for as long as they play. One level only: your friends' referrals don't count for you.</div>
+    <div id="refNoWallet" class="hide">Paste your wallet address first to get your personal link.<br><button class="btn pink" id="refWallet">Add wallet</button></div>
+    <div id="refBody">
+      <div class="rlink"><input id="refLink" readonly spellcheck="false"><button class="btn" id="refCopy">📋 Copy</button></div>
+      <div class="rstats"><div class="rs"><b id="refCount">…</b><span>referrals</span></div><div class="rs"><b id="refPts">…</b><span>their points</span></div><div class="rs me"><b id="refBonus">…</b><span>your bonus</span></div></div>
+      <div class="rnote">⏱ UPDATES EVERY 3 HOURS<small id="refUpd"></small></div>
+      <div id="refMsg"></div>
+    </div>
+    <div class="lbrow"><span></span><button class="btn ghost" id="refClose">Close</button></div></div>
+</div>
 <div id="over" class="ov disp hide">
   <h1>BUSTED</h1>
   <div class="stole" id="ovBy"></div><div class="line" id="ovLine"></div>
   <div class="sc" id="ovScore">0</div><div class="sub" id="ovSub"></div>
   <div class="nb hide" id="ovNew">NEW BEST</div>
   <div id="walletBox">
-    <div class="wl">Save this score to the $FAPPY leaderboard · paste your wallet address</div>
+    <div class="wl">Save this score to the $FAPPY leaderboard · wallet address (edit to switch)</div>
     <div class="wrow"><input id="wallet" placeholder="0x… your wallet address" maxlength="42" spellcheck="false" autocomplete="off"></div>
     <div class="wrow"><button class="btn pink" id="submitScore">💾 Save score</button><button class="btn" id="again">▶ Play again</button></div>
     <div id="wmsg"></div>
@@ -757,6 +788,10 @@ const isAddr=a=>/^0x[0-9a-fA-F]{40}$/.test(a);const short=a=>a.slice(0,6)+'…'+
 const fmt=n=>{n=Number(n)||0;const a=Math.abs(n);return a>=1e9?(n/1e9).toFixed(1)+'B':a>=1e6?(n/1e6).toFixed(1)+'M':a>=1e3?(n/1e3).toFixed(1)+'K':String(Math.round(n))};
 let savedWallet='';try{savedWallet=(localStorage.getItem('fappy3_wallet')||'').toLowerCase()}catch(e){}if(!isAddr(savedWallet))savedWallet='';
 let gateOpen=true;
+// ---- referral code from ?ref=… (kept in localStorage until the wallet is registered)
+let refParam='';try{const u=new URL(location.href);const r=(u.searchParams.get('ref')||'').toLowerCase();if(/^[a-z0-9]{8}$/.test(r)){localStorage.setItem('fappy3_ref',r);u.searchParams.delete('ref');history.replaceState(null,'',u.pathname+u.search+u.hash)}refParam=localStorage.getItem('fappy3_ref')||''}catch(e){}
+let myRefCode='';try{myRefCode=localStorage.getItem('fappy3_refcode')||''}catch(e){}
+async function ensurePlayer(w){if(!isAddr(w||''))return null;try{const r=await fetch(CFG.API+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'player',wallet:w.toLowerCase(),ref:refParam||undefined})});const j=await r.json();if(r.ok&&j.ref_code){myRefCode=j.ref_code;try{localStorage.setItem('fappy3_refcode',j.ref_code)}catch(e){}}return r.ok?j:null}catch(e){return null}}
 function setWallet(w){savedWallet=w;$('wallet').value=w;$('gwallet').value=w;try{localStorage.setItem('fappy3_wallet',w)}catch(e){}}
 setWallet(savedWallet);
 function wmsg(t,err){const m=$('wmsg');m.textContent=t;m.classList.toggle('err',!!err)}
@@ -765,12 +800,18 @@ async function getRun(){try{const r=await fetch(CFG.API+'/run',{method:'POST',he
 async function submitScore(){const w=$('wallet').value.trim();if(!isAddr(w)){wmsg('Enter a valid 0x address (42 characters).',true);return}
   if(!runToken){wmsg('Could not reach the server when this run started — score cannot be saved. Check your connection and play again.',true);return}
   const btn=$('submitScore');btn.disabled=true;wmsg('Saving…');
-  const body={op:'submit',run:runToken,wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT))};
+  const body={op:'submit',run:runToken,wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT)),ref:refParam||undefined};
   try{const r=await fetch(CFG.API+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));if(j.ref_code){myRefCode=j.ref_code;try{localStorage.setItem('fappy3_refcode',j.ref_code)}catch(e){}}
     setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+fmt(score));sfx.rank();loadLeaderboard(w.toLowerCase(),true).then(st=>{if(st&&st.rank)wmsg('Saved +'+fmt(score)+' · you are #'+st.rank+' of '+fmt(st.players)+' with '+fmt(st.total)+' pts')})}
   catch(e){wmsg('Failed: '+((e&&e.message)||'unknown error'),true);btn.disabled=false}}
-function renderStats(st,me){lbStatsData=st;drawBoard();const el=$('lbStats');if(!st){el.innerHTML='';return}const pl='<span class="pl">players <b>'+fmt(st.players)+'</b></span>';
+function renderTitle(st,me){const el=$('myPts');if(!me){el.classList.add('hide');return}el.classList.remove('hide');
+  const wl='<span class="sm" style="color:#8d86a8">wallet '+short(me)+' · <u id="chgWallet" style="cursor:pointer;color:var(--cyan)">change</u></span>';
+  if(st&&st.total!=null)el.innerHTML='YOUR POINTS <b>'+fmt(st.total)+'</b> · #'+st.rank+' OF '+fmt(st.players)+(st.ref_bonus>0?' · <span style="color:var(--green)">+'+fmt(st.ref_bonus)+' FROM REFERRALS</span>':'')+'<span class="sm">That\'s a lot. Keep playing — when $FAPPY launches, your points turn into your payout. 💸</span>'+wl;
+  else el.innerHTML='YOUR POINTS <b>0</b><span class="sm">Play now — when $FAPPY launches, points turn into your payout. 💸</span>'+wl;
+  const c=$('chgWallet');if(c){c.addEventListener('pointerdown',e=>e.stopPropagation());c.addEventListener('click',e=>{e.stopPropagation();openGate()})}}
+function openGate(){$('title').classList.add('hide');$('gate').classList.remove('hide');gateOpen=true;$('gwallet').value=savedWallet;gmsg(savedWallet?'Current wallet: '+short(savedWallet)+' — paste a new one to switch.':'');setTimeout(()=>$('gwallet').focus(),50)}
+function renderStats(st,me){lbStatsData=st;drawBoard();renderTitle(st,me);if(refOpen)renderRef();const el=$('lbStats');if(!st){el.innerHTML='';return}const pl='<span class="pl">players <b>'+fmt(st.players)+'</b></span>';
   if(st.total!=null)el.innerHTML='your position <b class="pos">#'+st.rank+'</b> · your points <b class="me">'+fmt(st.total)+'</b> · '+pl;
   else if(isAddr(me||''))el.innerHTML='no saved score yet · '+pl;
   else el.innerHTML=pl+' · <span style="text-transform:none;letter-spacing:0;font-family:\'Segoe UI\',sans-serif">paste your wallet to see your position</span>'}
@@ -788,27 +829,43 @@ $('lbBtn').addEventListener('pointerdown',e=>e.stopPropagation());$('lbBtn').add
 $('lbModal').addEventListener('pointerdown',e=>{e.stopPropagation();if(e.target===$('lbModal'))closeLb()});
 $('lbClose').addEventListener('click',e=>{e.stopPropagation();closeLb()});
 $('lbMore').addEventListener('click',e=>{e.stopPropagation();const all=$('lb').classList.toggle('all');$('lbMore').textContent=all?'show top 5':'show top 10'});
+// ---- referral modal
+let refOpen=false;
+function renderRef(){const st=lbStatsData,has=isAddr(savedWallet);$('refNoWallet').classList.toggle('hide',has);$('refBody').classList.toggle('hide',!has);if(!has)return;
+  const code=(st&&st.ref_code)||myRefCode;$('refLink').value=code?location.origin+'/?ref='+code:'generating…';
+  $('refCount').textContent=st?fmt(st.ref_count||0):'…';$('refPts').textContent=st?fmt(st.ref_points||0):'…';$('refBonus').textContent=st?'+'+fmt(st.ref_bonus||0):'…';
+  const d=st&&st.ref_refreshed_at?new Date(st.ref_refreshed_at):null;$('refUpd').textContent=d?'last update '+d.toLocaleString()+' · next one within 3 hours':''}
+async function openRef(){refOpen=true;$('refModal').classList.remove('hide');$('refMsg').textContent='';renderRef();
+  if(isAddr(savedWallet)){let st=await loadLeaderboard(savedWallet,true);if(st&&!st.ref_code){await ensurePlayer(savedWallet);st=await loadLeaderboard(savedWallet,true)}renderRef()}}
+function closeRef(){refOpen=false;$('refModal').classList.add('hide');cv.focus()}
+$('refBtn').addEventListener('pointerdown',e=>e.stopPropagation());$('refBtn').addEventListener('click',e=>{e.stopPropagation();ac();openRef()});
+$('refModal').addEventListener('pointerdown',e=>{e.stopPropagation();if(e.target===$('refModal'))closeRef()});
+$('refClose').addEventListener('click',e=>{e.stopPropagation();closeRef()});
+$('refCopy').addEventListener('click',async e=>{e.stopPropagation();const v=$('refLink').value;if(!/^https?:/.test(v))return;try{await navigator.clipboard.writeText(v);$('refMsg').textContent='Copied! Send it to your friends.'}catch(x){$('refLink').select();try{document.execCommand('copy');$('refMsg').textContent='Copied!'}catch(y){$('refMsg').textContent='Select the link and copy it manually.'}}});
+$('refLink').addEventListener('click',e=>{e.stopPropagation();e.target.select()});
+$('refWallet').addEventListener('click',e=>{e.stopPropagation();closeRef();openGate()});
 // ---- gate
 function gmsg(t,err){const m=$('gmsg');m.textContent=t;m.style.color=err?'#ff2d55':'#7fe06a'}
 function closeGate(){gateOpen=false;$('gate').classList.add('hide');$('title').classList.remove('hide');cv.focus()}
 $('gate').addEventListener('pointerdown',e=>e.stopPropagation());
-$('gsave').addEventListener('click',e=>{e.stopPropagation();ac();const w=$('gwallet').value.trim();if(!isAddr(w)){gmsg('That is not a valid 0x address (42 characters).',true);return}setWallet(w.toLowerCase());loadLeaderboard(w.toLowerCase());sfx.pick();closeGate()});
-$('gskip').addEventListener('click',e=>{e.stopPropagation();ac();closeGate()});
+$('gsave').addEventListener('click',e=>{e.stopPropagation();ac();const w=$('gwallet').value.trim();if(!isAddr(w)){gmsg('That is not a valid 0x address (42 characters).',true);return}setWallet(w.toLowerCase());ensurePlayer(w).then(()=>loadLeaderboard(w.toLowerCase()));sfx.pick();closeGate()});
+$('gskip').addEventListener('click',e=>{e.stopPropagation();ac();closeGate();if(savedWallet)loadLeaderboard(savedWallet)});
 $('gwallet').addEventListener('keydown',e=>{if(e.key==='Enter')$('gsave').click()});
 $('wallet').addEventListener('keydown',e=>{if(e.key==='Enter')$('submitScore').click()});
+$('wallet').addEventListener('change',e=>{const w=e.target.value.trim();if(isAddr(w)&&w.toLowerCase()!==savedWallet){setWallet(w.toLowerCase());ensurePlayer(w).then(()=>loadLeaderboard(w.toLowerCase()));if($('submitScore').disabled)wmsg('Wallet changed · your next runs go to '+short(w.toLowerCase()))}});
 // ---- first-loss tutorial
 function showTut(){tutOpen=true;tutSeen=true;try{localStorage.setItem('fappy3_tut','1')}catch(e){}$('tut').classList.remove('hide')}
 function closeTut(){tutOpen=false;$('tut').classList.add('hide');$('over').classList.remove('hide');cv.focus()}
 $('tut').addEventListener('pointerdown',e=>e.stopPropagation());
 $('tutOk').addEventListener('click',e=>{e.stopPropagation();ac();closeTut()});
-if(savedWallet)closeGate();
+if(savedWallet){closeGate();ensurePlayer(savedWallet)}
 $('submitScore').addEventListener('click',e=>{e.stopPropagation();submitScore()});
 $('walletBox').addEventListener('pointerdown',e=>e.stopPropagation());
 $('again').addEventListener('click',e=>{e.stopPropagation();ac();if(state==='over')start()});
 
 // ============================================================ INPUT
 const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
-function press(e){if(gateOpen||tutOpen)return;ac();cv.focus();
+function press(e){if(gateOpen||tutOpen||refOpen||lbOpen)return;ac();cv.focus();
   if(state==='title'){start();return}
   if(state==='over'){if(t-overT>1.8)start();return}
   if(e&&e.clientX!==undefined){mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(pickups,true);
@@ -818,7 +875,7 @@ cv.addEventListener('pointerdown',press);
 cv.addEventListener('pointermove',e=>{if(state!=='play'||!pickups.length){cv.style.cursor='';return}mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mouse,camera);cv.style.cursor=ray.intersectObjects(pickups,true).length?'grab':''});
 $('launch').addEventListener('pointerdown',e=>{e.stopPropagation();ac();launch()});
 $('title').addEventListener('pointerdown',press);$('over').addEventListener('pointerdown',press);
-addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(tutOpen){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();closeTut()}return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
+addEventListener('keydown',e=>{if(e.repeat)return;const ae=document.activeElement;if(ae&&ae.tagName==='INPUT'){if(e.code==='Escape')ae.blur();return}if(lbOpen){if(e.code==='Escape')closeLb();return}if(refOpen){if(e.code==='Escape')closeRef();return}if(tutOpen){if(e.code==='Space'||e.code==='Enter'){e.preventDefault();closeTut()}return}if(gateOpen)return;if(e.code==='KeyF'){ac();launch();return}if(state!=='play'||e.code==='Space'||e.code==='Enter'){e.preventDefault();press()}});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 drawScreen();drawMonitor();drawBoard();cv.focus();
 // ---- gate coin: snapshot of the bird's head on green

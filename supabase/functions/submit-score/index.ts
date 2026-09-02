@@ -1,7 +1,8 @@
 // Supabase Edge Function — the ONLY write path to public.scores.
 //
 //   POST {op:"start"}                                   -> {run:"<token>"}   issued when a game starts
-//   POST {op:"submit", wallet, score, ships, best_streak, duration_s, run}
+//   POST {op:"submit", wallet, score, ships, best_streak, duration_s, run, ref?}
+//   POST {op:"player", wallet, ref?}                      -> {ref_code, referred}  get-or-create player row
 //
 // The run token is an HMAC-signed (id, startedAt). On submit we require that the wall-clock
 // time since the token was issued is at least the claimed duration, that the token is fresh,
@@ -56,16 +57,26 @@ Deno.serve(async (req) => {
     const body = `${id}.${ts}`;
     return json({ run: `${body}.${await hmac(body)}` });
   }
-  if (b.op !== "submit") return json({ error: "bad op" }, 400);
+  if (b.op !== "submit" && b.op !== "player") return json({ error: "bad op" }, 400);
 
-  // ---- validate submission
   const walletRaw = String(b.wallet || "").trim();
   if (!/^0x[0-9a-fA-F]{40}$/.test(walletRaw)) return json({ error: "bad wallet" }, 400);
   // mixed-case input must carry a valid EIP-55 checksum (catches typos); all-lowercase is accepted as-is
   const mixed = walletRaw !== walletRaw.toLowerCase() && walletRaw !== walletRaw.toUpperCase();
   if (mixed && !isAddress(walletRaw, { strict: true })) return json({ error: "wallet checksum mismatch — double-check the address" }, 400);
   const wallet = walletRaw.toLowerCase();
+  const ref = typeof b.ref === "string" && /^[a-z0-9]{8}$/.test(b.ref) ? b.ref : null;
+  const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
+  // ---- get-or-create the player row (binds the referral only for brand-new wallets)
+  if (b.op === "player") {
+    const { data, error } = await sb.rpc("ensure_player", { w: wallet, r: ref });
+    if (error) return json({ error: error.message }, 400);
+    await sb.rpc("maybe_refresh_referrals");
+    return json(data);
+  }
+
+  // ---- validate submission
   const { score, ships, best_streak, duration_s } = b;
   if (!isInt(score, 0, 50_000_000) || !isInt(ships, 0, 5000) || !isInt(best_streak, 0, 5000) || !isInt(duration_s, 0, 86400))
     return json({ error: "bad numbers" }, 400);
@@ -83,11 +94,13 @@ Deno.serve(async (req) => {
   const ip = (req.headers.get("x-fappy-ip") || "").trim();
   const ip_hash = ip ? await sha256(ip + (Deno.env.get("IP_SALT") || "fappy")) : null;
 
-  const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const ep = await sb.rpc("ensure_player", { w: wallet, r: ref });
+  if (ep.error) return json({ error: ep.error.message }, 400);
   const { error } = await sb.from("scores").insert({ wallet, score, ships, best_streak, duration_s, run_id, ip_hash });
   if (error) {
     if (error.code === "23505") return json({ error: "this run was already saved" }, 409);
     return json({ error: error.message.replace(/^.*?: /, "") }, 400);
   }
-  return json({ ok: true });
+  await sb.rpc("maybe_refresh_referrals");
+  return json({ ok: true, ref_code: ep.data?.ref_code });
 });
