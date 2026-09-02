@@ -227,7 +227,7 @@
 <div id="lbModal" class="disp hide">
   <div id="lb"><h3>🏆 $FAPPY Leaderboard</h3><table><tbody id="lbBody"><tr><td colspan="3" style="color:#8d86a8">loading…</td></tr></tbody></table>
     <div id="lbStats" class="stats"></div>
-    <div class="chain">Robinhood Chain · best score per wallet</div>
+    <div class="chain">Robinhood Chain · total points per wallet, all runs added up</div>
     <div class="lbrow"><span id="lbMore">show top 10</span><button class="btn ghost" id="lbClose">Close</button></div></div>
 </div>
 <div id="over" class="ov disp hide">
@@ -444,12 +444,19 @@ imgPoster(1.8,1.8,-7.18,4.4,-0.9,Math.PI/2,'marcus',null,'SHIP ANYWAY','#fff'); 
 // ---------- in-room leaderboard board (back wall, above the monitor)
 const lbC=document.createElement('canvas');lbC.width=640;lbC.height=400;const lbX=lbC.getContext('2d');const lbT=new THREE.CanvasTexture(lbC);lbT.encoding=THREE.sRGBEncoding;
 let lbRows=[],lbMe='';
+let lbStatsData=null;
 function drawBoard(){const x=lbX,w=640,h=400;x.fillStyle='#0d0916';x.fillRect(0,0,w,h);
-  x.font='bold 46px Impact, Arial Black, sans-serif';x.textAlign='left';x.textBaseline='alphabetic';x.fillStyle='#ffd23f';x.fillText('🏆 $FAPPY LEADERBOARD',24,58);
-  x.fillStyle='#2b2140';x.fillRect(24,72,w-48,3);
-  x.font='bold 34px monospace';
-  if(!lbRows.length){x.fillStyle='#8d86a8';x.fillText(CFG.SUPABASE_URL?'no scores yet — be first':'offline',24,140)}
-  lbRows.slice(0,5).forEach((r,i)=>{const y=126+i*58;const me=lbMe&&r.wallet===lbMe;x.fillStyle=me?'#ff4fa0':(i===0?'#ffd23f':'#e6e0f5');x.fillText((i+1)+'.',24,y);x.fillText(String(r.wallet).slice(0,11),80,y);x.textAlign='right';x.fillText(fmt(r.best),w-24,y);x.textAlign='left'});
+  x.font='bold 44px Impact, Arial Black, sans-serif';x.textAlign='left';x.textBaseline='alphabetic';x.fillStyle='#ffd23f';x.fillText('🏆 $FAPPY LEADERBOARD',24,54);
+  x.fillStyle='#2b2140';x.fillRect(24,66,w-48,3);
+  x.font='bold 30px monospace';
+  if(!lbRows.length){x.fillStyle='#8d86a8';x.fillText(CFG.SUPABASE_URL?'no scores yet — be first':'offline',24,130)}
+  lbRows.slice(0,5).forEach((r,i)=>{const y=108+i*44;const me=lbMe&&r.wallet===lbMe;x.fillStyle=me?'#ff4fa0':(i===0?'#ffd23f':'#e6e0f5');x.fillText((i+1)+'.',24,y);x.fillText(String(r.wallet).slice(0,11),80,y);x.textAlign='right';x.fillText(fmt(r.total),w-24,y);x.textAlign='left'});
+  x.fillStyle='#2b2140';x.fillRect(24,300,w-48,3);
+  const st=lbStatsData;x.font='bold 30px Impact, Arial Black, sans-serif';x.textAlign='left';
+  if(st&&st.total!=null){x.fillStyle='#ff4fa0';x.fillText('YOU  #'+st.rank+' OF '+fmt(st.players),24,345);x.textAlign='right';x.fillStyle='#fff';x.fillText(fmt(st.total)+' PTS',w-24,345);x.textAlign='left'}
+  else if(st&&lbMe){x.fillStyle='#8d86a8';x.fillText('YOU  · NO SCORE YET · '+fmt(st.players)+' PLAYERS',24,345)}
+  else if(st){x.fillStyle='#8d86a8';x.fillText(fmt(st.players)+' PLAYERS · PASTE YOUR WALLET',24,345)}
+  else{x.fillStyle='#8d86a8';x.fillText('YOUR POSITION: …',24,345)}
   x.strokeStyle='#ffd23f';x.lineWidth=6;x.strokeRect(6,6,w-12,h-12);lbT.needsUpdate=true}
 scene.add(box(3.0,1.95,0.1,M(0x1b1330,{metalness:0.4,roughness:0.5}),4.9,5.7,WZ+0.24));
 const boardMesh=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.75),new THREE.MeshBasicMaterial({map:lbT}));boardMesh.position.set(4.9,5.7,WZ+0.30);scene.add(boardMesh);
@@ -625,7 +632,7 @@ updateStock();updateProg();
 function start(){state='play';t=0;charge=0;score=0;scoreF=0;disp=0;streak=0;bestStreak=0;level=0;newBest=false;shipT=-9;lastTap=-9;runShips=0;stock=1;distract=0;fwLeft=0;pickT=4+Math.random()*3;shake=0;introT=0;beat=false;
   camPos.copy(CAM_FAR);camLook.copy(LOOK);vis={st:'idle',timer:4+Math.random()*2,look:0,type:0,warn:0.8};for(const c of critters)c.g.visible=false;
   for(const p of pickups)scene.remove(p);pickups.length=0;$('lvl').textContent='';termLines=[];termPush('### FAPPY BIRD // $FAPPY ###');termPush('$ claude "make fappy bird"');termPush('> new run. good luck.');
-  $('title').classList.add('hide');$('over').classList.add('hide');updateStock();drawScreen();sfx.start();runToken='';runTries=0;getRun()}
+  $('title').classList.add('hide');$('over').classList.add('hide');updateStock();drawScreen();sfx.start();runToken='';runTries=0;getRun();loadLeaderboard(savedWallet)}
 function warnTime(){const base=Math.max(0.55,1.25-level*0.06);return base*(0.75+Math.random()*0.5)}
 function lookTime(){return 0.8+Math.random()*0.8}
 function nextInterval(){const r=Math.random();let iv=r<0.2?1.2+Math.random()*1.2:(r<0.85?2.5+Math.random()*4:5+Math.random()*5);return Math.max(1.2,iv*Math.pow(0.94,level))}
@@ -762,17 +769,17 @@ async function submitScore(){const w=$('wallet').value.trim();if(!isAddr(w)){wms
   const body={op:'submit',run:runToken,wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT))};
   try{const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
-    setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+fmt(score));sfx.rank();loadLeaderboard(w.toLowerCase());loadStats(w).then(st=>{if(st&&st.rank)wmsg('Saved · '+short(w)+' · '+fmt(score)+' · #'+st.rank+' of '+fmt(st.players)+' players')})}
+    setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+fmt(score));sfx.rank();loadLeaderboard(w.toLowerCase());loadStats(w).then(st=>{if(st&&st.rank)wmsg('Saved +'+fmt(score)+' · you are #'+st.rank+' of '+fmt(st.players)+' with '+fmt(st.total)+' pts')})}
   catch(e){wmsg('Failed: '+((e&&e.message)||'unknown error'),true);btn.disabled=false}}
 async function loadStats(me){if(!CFG.SUPABASE_URL)return null;try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/rpc/player_stats',{method:'POST',headers:hdr(),body:JSON.stringify({w:isAddr(me||'')?me.toLowerCase():null})});return r.ok?await r.json():null}catch(e){return null}}
-function renderStats(st,me){const el=$('lbStats');if(!st){el.innerHTML='';return}const pl='<span class="pl">players <b>'+fmt(st.players)+'</b></span>';
-  if(st.best!=null)el.innerHTML='your score <b class="me">'+fmt(st.best)+'</b> · position <b class="pos">#'+st.rank+'</b> · '+pl;
+function renderStats(st,me){lbStatsData=st;drawBoard();const el=$('lbStats');if(!st){el.innerHTML='';return}const pl='<span class="pl">players <b>'+fmt(st.players)+'</b></span>';
+  if(st.total!=null)el.innerHTML='your position <b class="pos">#'+st.rank+'</b> · your points <b class="me">'+fmt(st.total)+'</b> · '+pl;
   else if(isAddr(me||''))el.innerHTML='no saved score yet · '+pl;
   else el.innerHTML=pl+' · <span style="text-transform:none;letter-spacing:0;font-family:\'Segoe UI\',sans-serif">paste your wallet to see your position</span>'}
 async function loadLeaderboard(me){const tb=$('lbBody');loadStats(me).then(st=>renderStats(st,me));if(!CFG.SUPABASE_URL){tb.innerHTML='<tr><td colspan="3" style="color:#8d86a8">offline · configure Supabase to enable</td></tr>';drawBoard();return}
-  try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/leaderboard?select=wallet,best,ships&order=best.desc&limit=10',{headers:hdr()});const rows=await r.json();
+  try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/leaderboard?select=wallet,total,best,ships&order=total.desc&limit=10',{headers:hdr()});const rows=await r.json();
     lbRows=Array.isArray(rows)?rows:[];lbMe=isAddr(me||'')?short(me.toLowerCase()):'';const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));drawBoard();
-    tb.innerHTML=lbRows.length?lbRows.map((x,i)=>'<tr class="'+(lbMe&&x.wallet===lbMe?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+esc(String(x.wallet).slice(0,11))+'</td><td class="s">'+fmt(x.best)+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
+    tb.innerHTML=lbRows.length?lbRows.map((x,i)=>'<tr class="'+(lbMe&&x.wallet===lbMe?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+esc(String(x.wallet).slice(0,11))+'</td><td class="s">'+fmt(x.total)+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
   catch(e){tb.innerHTML='<tr><td colspan="3" style="color:#ff2d55">could not load</td></tr>'}}
 loadLeaderboard(savedWallet.toLowerCase());
 // ---- leaderboard modal
