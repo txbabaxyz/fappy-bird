@@ -449,7 +449,7 @@ function drawBoard(){const x=lbX,w=640,h=400;x.fillStyle='#0d0916';x.fillRect(0,
   x.font='bold 44px Impact, Arial Black, sans-serif';x.textAlign='left';x.textBaseline='alphabetic';x.fillStyle='#ffd23f';x.fillText('🏆 $FAPPY LEADERBOARD',24,54);
   x.fillStyle='#2b2140';x.fillRect(24,66,w-48,3);
   x.font='bold 30px monospace';
-  if(!lbRows.length){x.fillStyle='#8d86a8';x.fillText(CFG.SUPABASE_URL?'no scores yet — be first':'offline',24,130)}
+  if(!lbRows.length){x.fillStyle='#8d86a8';x.fillText('no scores yet — be first',24,130)}
   lbRows.slice(0,5).forEach((r,i)=>{const y=108+i*44;const me=lbMe&&r.wallet===lbMe;x.fillStyle=me?'#ff4fa0':(i===0?'#ffd23f':'#e6e0f5');x.fillText((i+1)+'.',24,y);x.fillText(String(r.wallet).slice(0,11),80,y);x.textAlign='right';x.fillText(fmt(r.total),w-24,y);x.textAlign='left'});
   x.fillStyle='#2b2140';x.fillRect(24,300,w-48,3);
   const st=lbStatsData;x.font='bold 30px Impact, Arial Black, sans-serif';x.textAlign='left';
@@ -641,7 +641,7 @@ function bust(){state='over';overT=t;shake=0.7;flashFx('#ff2d55',0.8);sfx.bust()
   pop3d('BUSTED','#ff2d55',birdBase.x,birdBase.y+2.6,birdBase.z+0.5,1.4,3);
   [350,900,1500].forEach((d,i)=>setTimeout(()=>{if(state!=='over')return;sfx.laugh();pop3d(['HEHEHE','MINE NOW','HAHAHA'][i],'#ff2d55',1.6+(Math.random()-0.5),5.2,-6.3,1.1,1.2)},d));
   if(score>best){best=score;newBest=true;try{localStorage.setItem('fappy3_best',best)}catch(e){}}try{localStorage.setItem('fappy3_ships',career)}catch(e){}
-  const v=VISITORS[vis.type];$('ovBy').textContent=v.n+' stole your idea';$('ovLine').textContent=v.line;$('ovScore').textContent=score;$('ovSub').textContent=runShips+' ships this run · best streak x'+bestStreak;$('ovNew').classList.toggle('hide',!newBest);$('submitScore').disabled=false;wmsg('');if(isAddr(savedWallet)&&CFG.EDGE_URL&&score>0)setTimeout(submitScore,1800);setTimeout(()=>{if(!tutSeen)showTut();else $('over').classList.remove('hide')},1700);updateProg()}
+  const v=VISITORS[vis.type];$('ovBy').textContent=v.n+' stole your idea';$('ovLine').textContent=v.line;$('ovScore').textContent=score;$('ovSub').textContent=runShips+' ships this run · best streak x'+bestStreak;$('ovNew').classList.toggle('hide',!newBest);$('submitScore').disabled=false;wmsg('');if(isAddr(savedWallet)&&score>0)setTimeout(submitScore,1800);setTimeout(()=>{if(!tutSeen)showTut();else $('over').classList.remove('hide')},1700);updateProg()}
 function addCareer(){career++;runShips++;const ni=calcRank();updateProg();if(ni!==rankIdx){rankIdx=ni;sfx.rank();shake=0.5;flashFx('#6fe3ff',0.9);pop('RANK UP · '+RANKS[ni][1],'#6fe3ff',innerWidth/2,innerHeight*0.42,true);termPush('> promoted: '+RANKS[ni][1]);
   for(let i=0;i<300;i++)roomP.add(0,3.5,-2,(Math.random()-0.5)*12,Math.random()*9,(Math.random()-0.5)*9,2.2,CONF[i%7],6);coinBurst(0,3.5,-2,20)}}
 function ship(){charge=0;streak++;bestStreak=Math.max(bestStreak,streak);shipT=t;const risky=(vis.st==='warn'&&distract<=0);const bonus=Math.round(100*mult()*(risky?RISK_MULT:1));scoreF+=bonus;
@@ -751,7 +751,7 @@ requestAnimationFrame(frame);
 
 // ============================================================ LEADERBOARD / WALLET
 // Fill these after creating the Supabase project (see DEPLOY.md). EDGE_URL is optional (signature-verified mode).
-const CFG={SUPABASE_URL:'https://jxzjmiagaghjvdqhvwig.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_mSRBYiQ0m_nAo0bN2r31nQ_odO4Xq6l',EDGE_URL:'https://jxzjmiagaghjvdqhvwig.supabase.co/functions/v1/submit-score',CHAIN_ID:4663};
+const CFG={API:'/api',CHAIN_ID:4663};
 const isAddr=a=>/^0x[0-9a-fA-F]{40}$/.test(a);const short=a=>a.slice(0,6)+'…'+a.slice(-4);
 const fmt=n=>{n=Number(n)||0;const a=Math.abs(n);return a>=1e9?(n/1e9).toFixed(1)+'B':a>=1e6?(n/1e6).toFixed(1)+'M':a>=1e3?(n/1e3).toFixed(1)+'K':String(Math.round(n))};
 let savedWallet='';try{savedWallet=(localStorage.getItem('fappy3_wallet')||'').toLowerCase()}catch(e){}if(!isAddr(savedWallet))savedWallet='';
@@ -759,28 +759,25 @@ let gateOpen=true;
 function setWallet(w){savedWallet=w;$('wallet').value=w;$('gwallet').value=w;try{localStorage.setItem('fappy3_wallet',w)}catch(e){}}
 setWallet(savedWallet);
 function wmsg(t,err){const m=$('wmsg');m.textContent=t;m.classList.toggle('err',!!err)}
-function hdr(){return{'Content-Type':'application/json',apikey:CFG.SUPABASE_ANON_KEY,Authorization:'Bearer '+CFG.SUPABASE_ANON_KEY}}
 let runToken='',runTries=0;
-async function getRun(){if(!CFG.EDGE_URL)return;try{const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'start'})});const j=await r.json();if(!j.run)throw new Error('no token');runToken=j.run}catch(e){if(state==='play'&&runTries++<3)setTimeout(getRun,3000)}}
+async function getRun(){try{const r=await fetch(CFG.API+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'start'})});const j=await r.json();if(!j.run)throw new Error('no token');runToken=j.run}catch(e){if(state==='play'&&runTries++<3)setTimeout(getRun,3000)}}
 async function submitScore(){const w=$('wallet').value.trim();if(!isAddr(w)){wmsg('Enter a valid 0x address (42 characters).',true);return}
-  if(!CFG.EDGE_URL){wmsg('Leaderboard not configured yet.',true);return}
   if(!runToken){wmsg('Could not reach the server when this run started — score cannot be saved. Check your connection and play again.',true);return}
   const btn=$('submitScore');btn.disabled=true;wmsg('Saving…');
   const body={op:'submit',run:runToken,wallet:w,score,ships:runShips,best_streak:bestStreak,duration_s:Math.max(0,Math.round(overT))};
-  try{const r=await fetch(CFG.EDGE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  try{const r=await fetch(CFG.API+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
-    setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+fmt(score));sfx.rank();loadLeaderboard(w.toLowerCase());loadStats(w).then(st=>{if(st&&st.rank)wmsg('Saved +'+fmt(score)+' · you are #'+st.rank+' of '+fmt(st.players)+' with '+fmt(st.total)+' pts')})}
+    setWallet(w.toLowerCase());wmsg('Saved · '+short(w)+' · '+fmt(score));sfx.rank();loadLeaderboard(w.toLowerCase(),true).then(st=>{if(st&&st.rank)wmsg('Saved +'+fmt(score)+' · you are #'+st.rank+' of '+fmt(st.players)+' with '+fmt(st.total)+' pts')})}
   catch(e){wmsg('Failed: '+((e&&e.message)||'unknown error'),true);btn.disabled=false}}
-async function loadStats(me){if(!CFG.SUPABASE_URL)return null;try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/rpc/player_stats',{method:'POST',headers:hdr(),body:JSON.stringify({w:isAddr(me||'')?me.toLowerCase():null})});return r.ok?await r.json():null}catch(e){return null}}
 function renderStats(st,me){lbStatsData=st;drawBoard();const el=$('lbStats');if(!st){el.innerHTML='';return}const pl='<span class="pl">players <b>'+fmt(st.players)+'</b></span>';
   if(st.total!=null)el.innerHTML='your position <b class="pos">#'+st.rank+'</b> · your points <b class="me">'+fmt(st.total)+'</b> · '+pl;
   else if(isAddr(me||''))el.innerHTML='no saved score yet · '+pl;
   else el.innerHTML=pl+' · <span style="text-transform:none;letter-spacing:0;font-family:\'Segoe UI\',sans-serif">paste your wallet to see your position</span>'}
-async function loadLeaderboard(me){const tb=$('lbBody');loadStats(me).then(st=>renderStats(st,me));if(!CFG.SUPABASE_URL){tb.innerHTML='<tr><td colspan="3" style="color:#8d86a8">offline · configure Supabase to enable</td></tr>';drawBoard();return}
-  try{const r=await fetch(CFG.SUPABASE_URL+'/rest/v1/leaderboard?select=wallet,total,best,ships&order=total.desc&limit=10',{headers:hdr()});const rows=await r.json();
-    lbRows=Array.isArray(rows)?rows:[];lbMe=isAddr(me||'')?short(me.toLowerCase()):'';const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));drawBoard();
-    tb.innerHTML=lbRows.length?lbRows.map((x,i)=>'<tr class="'+(lbMe&&x.wallet===lbMe?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+esc(String(x.wallet).slice(0,11))+'</td><td class="s">'+fmt(x.total)+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>'}
-  catch(e){tb.innerHTML='<tr><td colspan="3" style="color:#ff2d55">could not load</td></tr>'}}
+async function loadLeaderboard(me,fresh){const tb=$('lbBody');me=isAddr(me||'')?me.toLowerCase():'';
+  try{const r=await fetch(CFG.API+'/lb?'+(me?'w='+me:'')+(fresh?'&t='+Date.now():''));const j=await r.json();const rows=Array.isArray(j.rows)?j.rows:[];
+    lbRows=rows;lbMe=me?short(me):'';const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));renderStats(j.stats||null,me);
+    tb.innerHTML=lbRows.length?lbRows.map((x,i)=>'<tr class="'+(lbMe&&x.wallet===lbMe?'me ':'')+(i>=5?'more':'')+'"><td class="r">'+(i+1)+'</td><td>'+esc(String(x.wallet).slice(0,11))+'</td><td class="s">'+fmt(x.total)+'</td></tr>').join(''):'<tr><td colspan="3">no scores yet — be the first</td></tr>';return j.stats||null}
+  catch(e){tb.innerHTML='<tr><td colspan="3" style="color:#ff2d55">could not load</td></tr>';return null}}
 loadLeaderboard(savedWallet.toLowerCase());
 // ---- leaderboard modal
 let lbOpen=false;

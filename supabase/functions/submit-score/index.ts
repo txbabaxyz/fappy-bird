@@ -9,7 +9,7 @@
 // per-wallet / per-IP rate limits and plausibility bounds.
 //
 // Deploy:  supabase functions deploy submit-score --no-verify-jwt
-// Secrets: RUN_SECRET (required), IP_SALT (optional). SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are injected.
+// Secrets: RUN_SECRET, PROXY_KEY (required), IP_SALT (optional). SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are injected.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { isAddress } from "npm:viem@2";
 
@@ -41,7 +41,9 @@ function timingSafeEqual(a: string, b: string) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
-  if (!Deno.env.get("RUN_SECRET")) return json({ error: "server not configured" }, 500);
+  if (!Deno.env.get("RUN_SECRET") || !Deno.env.get("PROXY_KEY")) return json({ error: "server not configured" }, 500);
+  // Only our Vercel proxy may call this function (the browser never talks to Supabase directly).
+  if (!timingSafeEqual(req.headers.get("x-proxy-key") || "", Deno.env.get("PROXY_KEY")!)) return json({ error: "forbidden" }, 403);
   if (Number(req.headers.get("content-length") || 0) > 2048) return json({ error: "too large" }, 413);
 
   let b: any;
@@ -78,7 +80,7 @@ Deno.serve(async (req) => {
   if (duration_s > elapsed + 3) return json({ error: "duration longer than the run itself" }, 400);
   if (elapsed > duration_s + SUBMIT_GRACE_S) return json({ error: "run submitted too late" }, 400);
 
-  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || req.headers.get("cf-connecting-ip") || "";
+  const ip = (req.headers.get("x-fappy-ip") || "").trim();
   const ip_hash = ip ? await sha256(ip + (Deno.env.get("IP_SALT") || "fappy")) : null;
 
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
