@@ -3,27 +3,32 @@
 Stack: one static `index.html` on Vercel (`fappybird.tech`) + Supabase (Postgres + Edge Function).
 Wallets are EVM `0x…` addresses (Robinhood Chain, chain id 4663, MetaMask-compatible).
 
-## Architecture (hardened by default)
+## Architecture (hardened)
 
 ```
-browser ──personal_sign──► MetaMask/Rabby/Coinbase Wallet
-   │ POST {wallet, score, ships, best_streak, duration_s, nonce, msg, sig}
+browser  POST {op:"start"}  ──►  Edge Function submit-score  ──►  {run: HMAC token with start time}
+   … player plays …
+browser  POST {op:"submit", wallet, score, ships, best_streak, duration_s, run}
    ▼
-Edge Function submit-score  (verifies EIP-191 signature with viem, service role)
-   │ INSERT
+Edge Function: token HMAC valid · elapsed time ≥ claimed duration · not expired · EIP-55 checksum
+   │ INSERT (service role)
    ▼
-Postgres scores  (RLS on, NO anon policies, guard trigger: rate limit + plausibility + replay)
+Postgres scores  (RLS on, NO anon policies; trigger: rate limits + plausibility; run_id unique)
    │
    ▼
-view leaderboard  (the only thing the publishable key can read)
+view leaderboard  (shortened wallets only — the only thing the publishable key can read)
 ```
 
-- The publishable key shipped in `index.html` can only `SELECT` the `leaderboard` view.
-- Nothing can write to `scores` except the Edge Function, which requires a valid signature
-  from the wallet itself over a canonical message that contains the score.
-- Replay: `sig` and `(wallet, nonce)` are unique; nonce must be within 10 minutes.
-- Abuse: 1 submission / wallet / 20 s, 6 submissions / IP hash / minute, plausibility bounds
-  on score vs ships and ships vs duration (DB trigger, applies to every write path).
+- The publishable key shipped in `index.html` can only `SELECT` the `leaderboard` view, which exposes
+  `0x1234…abcd`-style wallets, never full addresses.
+- Nothing writes to `scores` except the Edge Function. Every score needs a run token issued when the
+  game started; the claimed duration cannot exceed the real elapsed time; a token is single-use.
+- Abuse: 1 submission / wallet / 15 s, 6 submissions / IP hash / minute, plausibility bounds on
+  score vs ships and ships vs duration (DB trigger, applies to every write path).
+- Wallet ownership is NOT proven (by product decision): anyone can submit for any address, but only
+  within the rules above and only at real-time speed.
+- Supabase Auth signups are disabled; GraphQL is off; no storage buckets.
+- Site headers: CSP (scripts only self + cdnjs, connections only to our Supabase), HSTS, no framing.
 
 ## Supabase
 
@@ -33,7 +38,7 @@ Project ref: `jxzjmiagaghjvdqhvwig` (eu-central-1).
 supabase login --token sbp_…
 supabase link --project-ref jxzjmiagaghjvdqhvwig
 supabase db push                                   # applies supabase/migrations/*
-supabase secrets set IP_SALT=$(openssl rand -hex 16)
+supabase secrets set IP_SALT=$(openssl rand -hex 16) RUN_SECRET=$(openssl rand -hex 32)
 supabase functions deploy submit-score --no-verify-jwt
 ```
 
@@ -52,7 +57,6 @@ Domain `fappybird.tech` is attached in the Vercel project settings.
 In Supabase SQL Editor (runs as owner, sees raw rows):
 
 ```sql
-select wallet, best, ships, best_streak, runs, last_run
-from public.leaderboard
-order by best desc;
+select * from public.wallet_export;   -- full addresses, best score, runs
 ```
+`wallet_export` is owner-only; the public `leaderboard` view never returns full addresses.
